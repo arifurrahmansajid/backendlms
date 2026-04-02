@@ -9,7 +9,17 @@ const port = process.env.PORT || 5000;
 
 // middlewire
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://eduhub-client-side.vercel.app",
+    ],
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hffiq4b.mongodb.net/?appName=Cluster0`;
 app.get("/", (req, res) => {
   res.send("Smart Leaning is Runningggg");
