@@ -7,19 +7,27 @@ const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 
-// middlewire
+// middleware
 app.use(express.json());
+
+const allowedOrigins = [
+  process.env.CLIENT_URL || "https://eduhub-client-side.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://eduhub-client-side.vercel.app",
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow non-browser clients like Postman
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error(`CORS policy does not allow access from ${origin}`));
+    },
     credentials: true,
     optionsSuccessStatus: 200,
   })
 );
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hffiq4b.mongodb.net/?appName=Cluster0`;
 app.get("/", (req, res) => {
   res.send("Smart Leaning is Runningggg");
